@@ -11,6 +11,7 @@ from flask import Flask, render_template
 # Initialize the Flask application
 app = Flask(__name__)
 
+
 @app.route('/')
 def home():
     """
@@ -20,6 +21,7 @@ def home():
         str: Rendered HTML content of the '0-index.html' template.
     """
     return render_template('0-index.html')
+
 
 if __name__ == '__main__':
     """

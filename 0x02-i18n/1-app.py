@@ -2,6 +2,7 @@
 from flask import Flask, render_template
 from flask_babel import Babel
 
+
 class Config:
     """
     Configuration for Flask application with Babel extension.
@@ -15,6 +16,7 @@ class Config:
     BABEL_DEFAULT_LOCALE = "en"
     BABEL_DEFAULT_TIMEZONE = "UTC"
 
+
 # Initialize Flask application
 app = Flask(__name__)
 # Load configuration from Config class
@@ -22,6 +24,7 @@ app.config.from_object(Config)
 
 # Initialize Babel with the app
 babel = Babel(app)
+
 
 @app.route('/')
 def home():
@@ -31,6 +34,7 @@ def home():
         str: HTML string with a header message.
     """
     return render_template('1-index.html')
+
 
 if __name__ == '__main__':
     # Run the Flask application in debug mode

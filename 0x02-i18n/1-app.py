@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+""" This module defines a basic babel setup"""
 from flask import Flask, render_template
 from flask_babel import Babel
 

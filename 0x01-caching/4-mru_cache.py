@@ -1,63 +1,39 @@
 #!/usr/bin/env python3
-""" MRU Cache module
+"""Most Recently Used caching module.
 """
+from collections import OrderedDict
+
 from base_caching import BaseCaching
 
 
 class MRUCache(BaseCaching):
+    """Represents an object that allows storing and
+    retrieving items from a dictionary with an MRU
+    removal mechanism when the limit is reached.
     """
-    MRUCache is a caching system that inherits from BaseCaching.
-    Implements an MRU (Most Recently Used) caching strategy.
-    """
-
     def __init__(self):
-        """
-        Initialize the MRUCache instance.
-        Calls the parent class's __init__ to set up cache_data.
+        """Initializes the cache.
         """
         super().__init__()
-        self.usage_order = []  # Tracks usage order of keys for MRU.
+        self.cache_data = OrderedDict()
 
     def put(self, key, item):
+        """Adds an item in the cache.
         """
-        Add an item to the cache.
-        If the number of items exceeds MAX_ITEMS, discard the most
-        recently used.
-        Args:
-            key: The key associated with the item.
-            item: The item to store in the cache.
-        Notes:
-            If key or item is None, this method does nothing.
-        """
-        if key is not None and item is not None:
-            if key in self.cache_data:
-                # Update the item if the key already exists.
-                self.cache_data[key] = item
-                # Move the key to the end to mark it as recently used.
-                self.usage_order.remove(key)
-                self.usage_order.append(key)
-            else:
-                # Add new key-value pair to the cache.
-                self.cache_data[key] = item
-                self.usage_order.append(key)
-
-                if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-                    # MRU: Remove the most recently used key.
-                    mru_key = self.usage_order.pop(-1)
-                    del self.cache_data[mru_key]
-                    print(f"DISCARD: {mru_key}")
+        if key is None or item is None:
+            return
+        if key not in self.cache_data:
+            if len(self.cache_data) + 1 > BaseCaching.MAX_ITEMS:
+                mru_key, _ = self.cache_data.popitem(False)
+                print("DISCARD:", mru_key)
+            self.cache_data[key] = item
+            self.cache_data.move_to_end(key, last=False)
+        else:
+            self.cache_data[key] = item
 
     def get(self, key):
+        """Retrieves an item by key.
         """
-        Retrieve an item from the cache by key.
-        Args:
-            key: The key associated with the item.
-        Returns:
-            The value in the cache linked to key, or None if key is invalid.
-        """
-        if key in self.cache_data:
-            # Mark the key as recently used.
-            self.usage_order.remove(key)
-            self.usage_order.append(key)
-            return self.cache_data[key]
-        return None
+        if key is not None and key in self.cache_data:
+            self.cache_data.move_to_end(key, last=False)
+        return self.cache_data.get(key, None)
